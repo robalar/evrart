@@ -1,4 +1,5 @@
 use clap::Parser;
+use evrart::docker_hub::download_image;
 
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
@@ -11,5 +12,5 @@ struct Cli {
 fn main() {
     let cli = Cli::parse();
 
-    println!("Downloading image '{}'", cli.image);
+    download_image(&cli.image);
 }
