@@ -1,4 +1,4 @@
-use color_eyre::eyre::Result; // new!
+use color_eyre::eyre::Result;
 use clap::Parser;
 use evrart::docker_hub::download_image;
 
@@ -11,13 +11,11 @@ struct Cli {
 
 
 fn main() -> Result<()> {
-    //    ^^^^^^^^^^^^^ new!
-    color_eyre::install()?;  // also new!
+    color_eyre::install()?;
 
     let cli = Cli::parse();
 
     download_image(&cli.image)?;
-    //                        ^ new!
 
-    Ok(())  // we have to return a result now
+    Ok(())
 }

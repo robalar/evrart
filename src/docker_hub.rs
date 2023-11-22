@@ -1,5 +1,4 @@
-use color_eyre::eyre::{Context, Result}; // new!
-
+use color_eyre::eyre::{Context, ContextCompat, Result};
 
 #[derive(serde::Deserialize, Debug, Clone)]
 struct AuthResponse {
@@ -7,7 +6,12 @@ struct AuthResponse {
 }
 
 pub fn download_image(image: &str) -> Result<()> {
-    //                             ^^^^^^^^^^^^^ new!
+    let (image, version) = match image.split_once(":") {
+        Some(t) => t,
+        None => (image, "latest")
+    };
+    println!("Pulling image '{}' version '{}'", image, version);
+
     let client = reqwest::blocking::Client::new();
 
     // Get auth token for docker registry
@@ -15,11 +19,9 @@ pub fn download_image(image: &str) -> Result<()> {
         .get("https://auth.docker.io/token?service=registry.docker.io")
         .query(&[("scope", format!("repository:library/{}:pull", image))])
         .send()
-        .wrap_err("auth token request failed")?  // replaces .unwrap()
+        .wrap_err("auth token request failed")?
         .json()
-        .wrap_err("decoding auth token request failed")?;  // replaces .unwrap()
+        .wrap_err("decoding auth token request failed")?;
 
-    dbg!(auth_response.token);
-
-    Ok(())  // new!
+    Ok(())
 }
